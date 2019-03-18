@@ -42,7 +42,7 @@ const formatResult = function formatResult (textResult) {
 
 const writeToFile = function writeToFile(filePath, content) {
   return new Promise((resolve, reject) => {
-    exec(`echo "${content}" | sudo tee  ${filePath} > /dev/null`, (error, stdout, stderr) => {
+    exec(`echo "${content}" | tee  ${filePath} > /dev/null`, (error, stdout, stderr) => {
       if (error) {
         reject(error);
       } else {
