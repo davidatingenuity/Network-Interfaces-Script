@@ -1,12 +1,11 @@
 # node-network-interfaces
-This is a node Wrapper around [Network-Interface-Script](https://github.com/JoeKuan/Network-Interfaces-Script) written by Joe Kuan.
+This is a fork of the node Wrapper by Javier Evans around [Network-Interface-Script](https://github.com/JoeKuan/Network-Interfaces-Script) written by Joe Kuan.
 Allows you to read and update the contents of your ```/etc/network/interfaces``` file.
+This version does not require sudo.
 
 ## Concerns
 This library is obviously only usable on systems that manage their network stack using ```/etc/network/interfaces``` although you can
 point the library at any file that has the same format.
-
-More importantly - it depends on passwordless sudo for write access to the ```/etc/network/interfaces``` file.  You will have to do the necessary work to enable this in your environment.
 
 Finally, it depends on access to the ```tee``` command.
 
