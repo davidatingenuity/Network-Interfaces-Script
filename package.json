@@ -5,6 +5,7 @@
   "main": "dist/network-interfaces.js",
   "scripts": {
     "test": "mocha test/script-runner.spec.js",
+	"prepare": "npm run compile",
     "compile": "babel --presets es2015 -d dist/ src/ && mkdir -p dist/awk && cp src/awk/* dist/awk",
     "prepublish": "npm run compile"
   },
