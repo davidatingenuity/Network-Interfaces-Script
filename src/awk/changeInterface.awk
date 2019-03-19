@@ -1,4 +1,4 @@
-function writeStatic(addr, nw, nm, gw, dns) {
+function writeStatic(addr, nw, nm, gw, dns, pup, pdown) {
 
     if (length(addr)) 
         print "    address ", addr
@@ -14,18 +14,26 @@ function writeStatic(addr, nw, nm, gw, dns) {
 
     if (length(dns))
         print "    dns-nameservers ", dns
+		
+	if (length(pup))
+		print "    pre-up ", pup
+		
+	if (length(pdown))
+		print "	   post-down ", pdown
 }
 
 function usage() {
         print "awk -f changeInterfaces.awk <interfaces file> dev=<eth device> \n" \
             "       [address=<ip addr>] [gateway=<ip addr>] [netmask=<ip addr>]\n" \
-            "       [network=<ip addr>] [mode=dhcp|static] [dns=<ip addr [ip addr ...]>] [arg=debug]"
+            "       [network=<ip addr>] [mode=dhcp|static] [dns=<ip addr [ip addr ...]>]\n" \
+			"		[preup=<command>] [postdown=<command>] [arg=debug]"
+
 }
 
 BEGIN { start = 0;
     dnsVal = "";
     
-    if (ARGC < 3 || ARGC > 10) {
+    if (ARGC < 3 || ARGC > 12) {
         usage();
         exit 1;
     }
@@ -48,7 +56,11 @@ BEGIN { start = 0;
             } else {
                 dnsVal = pair[2];
             }
-        }
+		}
+		else if (pair[1] == "preup")
+			preup = pair[2];
+		else if (pair[1] == "postdown")
+			postdown = pair[2];
         else if (pair[1] == "arg" && pair[2] == "debug")
             debug = 1;
         else if (pair[1] == "mode" && pair[2] == "dhcp") 
@@ -187,6 +199,11 @@ BEGIN { start = 0;
                     print $0;
                 }
             }
+			
+			else if ($1 == "pre-up" && length(preup))
+				print "	   pre-up ", preup;
+			else if ($1 == "post-down" && length(postdown))
+				print "	   post-down ", postdown;
 
             else if (!definedRemove) {
                 print $0;
@@ -197,11 +214,11 @@ BEGIN { start = 0;
 
     # If already defined dhcp, then dump the network properties
     if (definedDhcp) {
-        writeStatic(address, network, netmask, gateway, dnsVal);
+        writeStatic(address, network, netmask, gateway, dnsVal, preup, postdown);
         definedDhcp = 0;
         next;
     } else if (definedManual) {
-        writeStatic(address, network, netmask, gateway, dnsVal);
+        writeStatic(address, network, netmask, gateway, dnsVal, preup, postdown);
         definedManual = 0;
         next;
     }
@@ -215,12 +232,12 @@ END {
     if (definedDhcp) {
         # This bit is useful at the condition when the last line is
         # iface dhcp
-        writeStatic(address, network, netmask, gateway, dnsVal);
+        writeStatic(address, network, netmask, gateway, dnsVal, preup, postdown);
     } 
     else if (definedManual) {
         # This bit is useful at the condition when the last line is
         # iface dhcp
-        writeStatic(address, network, netmask, gateway, dnsVal);
+        writeStatic(address, network, netmask, gateway, dnsVal, preup, postdown);
     }
     else if (definedStatic) {
         # Condition for last line and adding dns entry
