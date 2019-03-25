@@ -34,6 +34,7 @@ BEGIN { start = 0;
     dnsVal = "";
     
     if (ARGC < 3 || ARGC > 12) {
+		print "Wrong number of parameters"
         usage();
         exit 1;
     }
@@ -70,6 +71,7 @@ BEGIN { start = 0;
         else if (pair[1] == "mode" && pair[2] == "remove")
             remove = 1;
         else {
+			print "Unknown parameter: ", pair[1]
             usage();
             exit 1;
         }

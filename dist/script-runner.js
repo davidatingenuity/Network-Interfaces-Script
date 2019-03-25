@@ -14,11 +14,11 @@ var convertArgsForScript = function convertArgsForScript(interfacesFilePath, arg
 
   // The script requires that device be specified as 
   // "dev=<deviceName>" if changing the interface
-  converted.push('dev=' + args.device);
+  converted.push('dev="' + args.device + '"');
   delete args.device;
 
   for (var key in args) {
-    converted.push(key + '=' + args[key]);
+    converted.push(key + '="' + args[key] + '"');
   }
 
   return converted.join(' ');

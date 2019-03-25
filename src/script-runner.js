@@ -15,11 +15,11 @@ const convertArgsForScript = function convertArgsForScript (interfacesFilePath, 
 
   // The script requires that device be specified as 
   // "dev=<deviceName>" if changing the interface
-  converted.push(`dev=${args.device}`);
+  converted.push(`dev="${args.device}"`);
   delete args.device;
 
   for (let key in args) {
-    converted.push(`${key}=${args[key]}`);
+    converted.push(`${key}="${args[key]}"`);
   }
 
   return converted.join(' ');
